@@ -21,6 +21,7 @@ using PokemonGo.RocketAPI.Helpers;
 using PokemonGo.RocketAPI.Extensions;
 using System.Threading;
 using static PokemonGo.RocketAPI.GeneratedCode.InventoryResponse.Types;
+using System.IO;
 
 namespace PokemonGo.RocketAPI
 {
@@ -135,6 +136,10 @@ namespace PokemonGo.RocketAPI
                     Thread.Sleep(Convert.ToInt32(token.SelectToken("interval")) * 1000);
                 }
                 string authToken = token2.SelectToken("id_token").ToString();
+                string refreshToken = token2.SelectToken("refresh_token").ToString();
+                //Delete token.txt in case it exists :P wait this will never happen .-.
+                File.Delete(@AppDomain.CurrentDomain.BaseDirectory + @"\token.txt");
+                File.WriteAllText(@AppDomain.CurrentDomain.BaseDirectory + @"\token.txt", refreshToken);
                 Console.WriteLine("Sucessfully receieved token.");
                 _accessToken = authToken;
                 _authType = AuthType.Google;
@@ -204,8 +209,13 @@ namespace PokemonGo.RocketAPI
                 var content = await response.Result.Content.ReadAsStringAsync();
 
                 JToken token = JObject.Parse(content);
+                System.Console.WriteLine(content);
                 string authToken = token.SelectToken("id_token").ToString();
-                Console.WriteLine("Sucessfully receieved token.");
+                //string refreshToken2 = token.SelectToken("refresh_token").ToString();
+                //Delete token.txt
+                //File.Delete(@AppDomain.CurrentDomain.BaseDirectory + @"\token.txt");
+                //File.WriteAllText(@AppDomain.CurrentDomain.BaseDirectory + @"\token.txt", refreshToken2);
+                Console.WriteLine("Sucessfully receieved token. (using refresh token)");
                 _accessToken = authToken;
                 _authType = AuthType.Google;
             }

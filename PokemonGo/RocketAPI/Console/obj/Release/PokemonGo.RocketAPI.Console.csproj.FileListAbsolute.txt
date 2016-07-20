@@ -1,0 +1,17 @@
+C:\Users\simon\Documents\GitHub\PokemonGoBot\PokemonGo\RocketAPI\Console\bin\Release\PokemonGo.RocketAPI.Console.exe.config
+C:\Users\simon\Documents\GitHub\PokemonGoBot\PokemonGo\RocketAPI\Console\bin\Release\PokemonGo.RocketAPI.Console.exe
+C:\Users\simon\Documents\GitHub\PokemonGoBot\PokemonGo\RocketAPI\Console\bin\Release\PokemonGo.RocketAPI.Console.pdb
+C:\Users\simon\Documents\GitHub\PokemonGoBot\PokemonGo\RocketAPI\Console\bin\Release\Google.Protobuf.dll
+C:\Users\simon\Documents\GitHub\PokemonGoBot\PokemonGo\RocketAPI\Console\bin\Release\Pokemon Go Rocket API.dll
+C:\Users\simon\Documents\GitHub\PokemonGoBot\PokemonGo\RocketAPI\Console\bin\Release\Newtonsoft.Json.dll
+C:\Users\simon\Documents\GitHub\PokemonGoBot\PokemonGo\RocketAPI\Console\bin\Release\S2Geometry.dll
+C:\Users\simon\Documents\GitHub\PokemonGoBot\PokemonGo\RocketAPI\Console\bin\Release\System.VarintBitConverter.dll
+C:\Users\simon\Documents\GitHub\PokemonGoBot\PokemonGo\RocketAPI\Console\bin\Release\C5.dll
+C:\Users\simon\Documents\GitHub\PokemonGoBot\PokemonGo\RocketAPI\Console\bin\Release\Pokemon Go Rocket API.pdb
+C:\Users\simon\Documents\GitHub\PokemonGoBot\PokemonGo\RocketAPI\Console\bin\Release\Google.Protobuf.xml
+C:\Users\simon\Documents\GitHub\PokemonGoBot\PokemonGo\RocketAPI\Console\bin\Release\Newtonsoft.Json.xml
+C:\Users\simon\Documents\GitHub\PokemonGoBot\PokemonGo\RocketAPI\Console\bin\Release\S2Geometry.xml
+C:\Users\simon\Documents\GitHub\PokemonGoBot\PokemonGo\RocketAPI\Console\bin\Release\C5.xml
+C:\Users\simon\Documents\GitHub\PokemonGoBot\PokemonGo\RocketAPI\Console\obj\Release\PokemonGo.RocketAPI.Console.csprojResolveAssemblyReference.cache
+C:\Users\simon\Documents\GitHub\PokemonGoBot\PokemonGo\RocketAPI\Console\obj\Release\PokemonGo.RocketAPI.Console.exe
+C:\Users\simon\Documents\GitHub\PokemonGoBot\PokemonGo\RocketAPI\Console\obj\Release\PokemonGo.RocketAPI.Console.pdb

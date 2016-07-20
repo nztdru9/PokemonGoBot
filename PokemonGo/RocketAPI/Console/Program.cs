@@ -11,6 +11,7 @@ using PokemonGo.RocketAPI.GeneratedCode;
 using PokemonGo.RocketAPI.Helpers;
 using static PokemonGo.RocketAPI.GeneratedCode.InventoryResponse.Types;
 using static PokemonGo.RocketAPI.GeneratedCode.InventoryResponse.Types.PokemonProto.Types;
+using System.IO;
 
 namespace PokemonGo.RocketAPI.Console
 {
@@ -38,8 +39,19 @@ namespace PokemonGo.RocketAPI.Console
             }
             else
             {
-                System.Console.WriteLine("Remember that Google only works for 30 Minutes then you need to restart the program.");
-                await client.LoginGoogle();
+                //Check if refresh token file exists
+                if(File.Exists(@AppDomain.CurrentDomain.BaseDirectory + @"\token.txt"))
+                {
+                    System.Console.WriteLine("Using Refresh Token: " + File.ReadLines(@AppDomain.CurrentDomain.BaseDirectory + @"\token.txt").First());
+                    client.GoogleLoginByRefreshToken(File.ReadLines(@AppDomain.CurrentDomain.BaseDirectory + @"\token.txt").First());
+                }
+                else
+                {
+                    System.Console.WriteLine("You will have to restart the application every 30 minutes because of google tokens. If you get errors delete the token.txt in the application folder.");
+                    //System.Console.WriteLine("Remember that Google only works for 30 Minutes then you need to restart the program.");
+                    await client.LoginGoogle();
+                }
+                
             }
             var serverResponse = await client.GetServer();
             System.Console.WriteLine("Server Fetched");
@@ -62,8 +74,8 @@ namespace PokemonGo.RocketAPI.Console
             {
                 System.Console.WriteLine("||Farm Started||");
                 await ExecuteFarmingPokestopsAndPokemons(client);
-                System.Console.WriteLine("Unexpected stop? Restarting in 20 seconds.");
-                await Task.Delay(20000);
+                System.Console.WriteLine("Unexpected stop? Restarting in 5 seconds.");
+                await Task.Delay(5000);
                 Execute();
             }
             catch (TaskCanceledException tce) { System.Console.WriteLine("Task Canceled Exception - Restarting"); Execute(); }
