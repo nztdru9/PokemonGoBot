@@ -25,9 +25,10 @@ namespace PokemonGo.RocketAPI.Console
 
         static async void Execute()
         {
-            string[] lines = File.ReadAllLines(@AppDomain.CurrentDomain.BaseDirectory + @"\gps.txt");
+            
             if (File.Exists(@AppDomain.CurrentDomain.BaseDirectory + @"\gps.txt"))
             {
+                string[] lines = File.ReadAllLines(@AppDomain.CurrentDomain.BaseDirectory + @"\gps.txt");
                 var client = new Client(Convert.ToDouble(lines[0]), Convert.ToDouble(lines[1]));
                 if (Settings.UsePTC)
                 {
