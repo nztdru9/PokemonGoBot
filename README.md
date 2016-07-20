@@ -4,5 +4,8 @@ Features:
 - [x] Catch Pokemon
 - [x] Transfer Pokemon
 - [x] Refresh token support. (for google auth)
-- [ ] Hatch Eggs
+- [x] Login with PTC
+- [x] Login with Google
+- [x] Hatch Eggs
+- [ ] Incubate New Eggs
 - [ ] More proto
