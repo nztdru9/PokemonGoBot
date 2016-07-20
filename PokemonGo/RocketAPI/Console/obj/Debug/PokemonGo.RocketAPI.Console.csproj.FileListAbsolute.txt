@@ -1,0 +1,1 @@
+C:\Users\Dev\Desktop\CatcherStopperTransfer\CatcherStopperTransfer\PokemonGo\RocketAPI\Console\bin\Debug\PokemonGo.RocketAPI.Console.exe.config
