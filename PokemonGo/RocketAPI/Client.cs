@@ -39,7 +39,7 @@ namespace PokemonGo.RocketAPI
         public Client(double lat, double lng)
         {
             SetCoordinates(lat, lng);
-
+            Console.WriteLine(lat + ", " + lng);
             //Setup HttpClient and create default headers
             HttpClientHandler handler = new HttpClientHandler()
             {

@@ -14,3 +14,4 @@ C:\Users\simon\Documents\GitHub\PokemonGoBot\PokemonGo\RocketAPI\bin\Release\S2G
 C:\Users\simon\Documents\GitHub\PokemonGoBot\PokemonGo\RocketAPI\bin\Release\System.Net.Http.Formatting.xml
 C:\Users\simon\Documents\GitHub\PokemonGoBot\PokemonGo\RocketAPI\obj\Release\Pokemon Go Rocket API.dll
 C:\Users\simon\Documents\GitHub\PokemonGoBot\PokemonGo\RocketAPI\obj\Release\Pokemon Go Rocket API.pdb
+C:\Users\simon\Documents\GitHub\PokemonGoBot\PokemonGo\RocketAPI\obj\Release\PokemonGo.RocketAPI.csprojResolveAssemblyReference.cache

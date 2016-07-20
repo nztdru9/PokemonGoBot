@@ -19,70 +19,128 @@ namespace PokemonGo.RocketAPI.Console
     {
         static void Main(string[] args)
         {
-
             Task.Run(() => Execute());
             System.Console.ReadLine();
         }
 
         static async void Execute()
         {
-            var client = new Client(Settings.DefaultLatitude, Settings.DefaultLongitude);
-            if (Settings.DefaultLatitude == 0 && Settings.DefaultLongitude == 0)
+            string[] lines = File.ReadAllLines(@AppDomain.CurrentDomain.BaseDirectory + @"\gps.txt");
+            if (File.Exists(@AppDomain.CurrentDomain.BaseDirectory + @"\gps.txt"))
             {
-                System.Console.WriteLine("You need to change Latitude and Longitude in the Settings.cs first (before you can use this script).\nThis Window will be closed in 10 Seconds!");
-                await Task.Delay(10000);
-                System.Environment.Exit(1);
-            }
-            if (Settings.UsePTC)
-            {
-                await client.LoginPtc(Settings.PtcUsername, Settings.PtcPassword);
-            }
-            else
-            {
-                //Check if refresh token file exists
-                if(File.Exists(@AppDomain.CurrentDomain.BaseDirectory + @"\token.txt"))
+                var client = new Client(Convert.ToDouble(lines[0]), Convert.ToDouble(lines[1]));
+                if (Settings.UsePTC)
                 {
-                    System.Console.WriteLine("Using Refresh Token: " + File.ReadLines(@AppDomain.CurrentDomain.BaseDirectory + @"\token.txt").First());
-                    client.GoogleLoginByRefreshToken(File.ReadLines(@AppDomain.CurrentDomain.BaseDirectory + @"\token.txt").First());
+                    await client.LoginPtc(Settings.PtcUsername, Settings.PtcPassword);
                 }
                 else
                 {
-                    System.Console.WriteLine("You will have to restart the application every 30 minutes because of google tokens. If you get errors delete the token.txt in the application folder.");
-                    //System.Console.WriteLine("Remember that Google only works for 30 Minutes then you need to restart the program.");
-                    await client.LoginGoogle();
+                    //Check if refresh token file exists
+                    if (File.Exists(@AppDomain.CurrentDomain.BaseDirectory + @"\token.txt"))
+                    {
+                        System.Console.WriteLine("Using Refresh Token: " + File.ReadLines(@AppDomain.CurrentDomain.BaseDirectory + @"\token.txt").First());
+                        client.GoogleLoginByRefreshToken(File.ReadLines(@AppDomain.CurrentDomain.BaseDirectory + @"\token.txt").First());
+                    }
+                    else
+                    {
+                        System.Console.WriteLine("You will have to restart the application every 30 minutes because of google tokens. If you get errors delete the token.txt in the application folder.");
+                        //System.Console.WriteLine("Remember that Google only works for 30 Minutes then you need to restart the program.");
+                        await client.LoginGoogle();
+                    }
+
                 }
-                
-            }
-            var serverResponse = await client.GetServer();
-            System.Console.WriteLine("Server Fetched");
-            var profile = await client.GetProfile();
-            System.Console.WriteLine("Profile Fetched");
-            var settings = await client.GetSettings();
-            System.Console.WriteLine("Settings Fetched");
-            var mapObjects = await client.GetMapObjects();
-            System.Console.WriteLine("Objects Fetched");
-            var inventory = await client.GetInventory();
-            System.Console.WriteLine("Inventory Fetched");
-            var pokemons = inventory.Payload[0].Bag.Items.Select(i => i.Item?.Pokemon).Where(p => p != null && p?.PokemonType != PokemonProto.Types.PokemonIds.PokemonUnset);
-            
-            System.Console.WriteLine("Starting up! Don't forget to thank the people who contributed to this project. Pokebot V5.0");
-            await Task.Delay(5000);
+                var serverResponse = await client.GetServer();
+                System.Console.WriteLine("Server Fetched");
+                var profile = await client.GetProfile();
+                System.Console.WriteLine("Profile Fetched");
+                var settings = await client.GetSettings();
+                System.Console.WriteLine("Settings Fetched");
+                var mapObjects = await client.GetMapObjects();
+                System.Console.WriteLine("Objects Fetched");
+                var inventory = await client.GetInventory();
+                System.Console.WriteLine("Inventory Fetched");
+                var pokemons = inventory.Payload[0].Bag.Items.Select(i => i.Item?.Pokemon).Where(p => p != null && p?.PokemonType != PokemonProto.Types.PokemonIds.PokemonUnset);
 
-
-
-            try
-            {
-                System.Console.WriteLine("||Farm Started||");
-                await ExecuteFarmingPokestopsAndPokemons(client);
-                System.Console.WriteLine("Unexpected stop? Restarting in 5 seconds.");
+                System.Console.WriteLine("Starting up! Don't forget to thank the people who contributed to this project. Pokebot V5.0");
                 await Task.Delay(5000);
-                Execute();
+
+
+
+                try
+                {
+                    System.Console.WriteLine("||Farm Started||");
+                    await ExecuteFarmingPokestopsAndPokemons(client);
+                    System.Console.WriteLine("Unexpected stop? Restarting in 5 seconds.");
+                    await Task.Delay(5000);
+                    Execute();
+                }
+                catch (TaskCanceledException tce) { System.Console.WriteLine("Task Canceled Exception - Restarting"); Execute(); }
+                catch (UriFormatException ufe) { System.Console.WriteLine("System URI Format Exception - Restarting"); Execute(); }
+                catch (ArgumentOutOfRangeException aore) { System.Console.WriteLine("ArgumentOutOfRangeException - Restarting"); Execute(); }
+                catch (NullReferenceException nre) { System.Console.WriteLine("Null Refference - Restarting"); Execute(); }
+                //await ExecuteCatchAllNearbyPokemons(client);
             }
-            catch (TaskCanceledException tce) { System.Console.WriteLine("Task Canceled Exception - Restarting"); Execute(); }
-            catch (UriFormatException ufe) { System.Console.WriteLine("System URI Format Exception - Restarting"); Execute(); }
-            catch (ArgumentOutOfRangeException aore) { System.Console.WriteLine("ArgumentOutOfRangeException - Restarting"); Execute(); }
-            catch (NullReferenceException nre) { System.Console.WriteLine("Null Refference - Restarting"); Execute(); }
-            //await ExecuteCatchAllNearbyPokemons(client);
+            else
+            {
+                var client = new Client(Settings.DefaultLatitude, Settings.DefaultLongitude);
+                if (Settings.DefaultLatitude == 0 && Settings.DefaultLongitude == 0)
+                {
+                    System.Console.WriteLine("You need to change Latitude and Longitude in the Settings.cs first (before you can use this script).\nThis Window will be closed in 10 Seconds!");
+                    await Task.Delay(10000);
+                    System.Environment.Exit(1);
+                }
+                if (Settings.UsePTC)
+                {
+                    await client.LoginPtc(Settings.PtcUsername, Settings.PtcPassword);
+                }
+                else
+                {
+                    //Check if refresh token file exists
+                    if (File.Exists(@AppDomain.CurrentDomain.BaseDirectory + @"\token.txt"))
+                    {
+                        System.Console.WriteLine("Using Refresh Token: " + File.ReadLines(@AppDomain.CurrentDomain.BaseDirectory + @"\token.txt").First());
+                        client.GoogleLoginByRefreshToken(File.ReadLines(@AppDomain.CurrentDomain.BaseDirectory + @"\token.txt").First());
+                    }
+                    else
+                    {
+                        System.Console.WriteLine("You will have to restart the application every 30 minutes because of google tokens. If you get errors delete the token.txt in the application folder.");
+                        //System.Console.WriteLine("Remember that Google only works for 30 Minutes then you need to restart the program.");
+                        await client.LoginGoogle();
+                    }
+
+                }
+                var serverResponse = await client.GetServer();
+                System.Console.WriteLine("Server Fetched");
+                var profile = await client.GetProfile();
+                System.Console.WriteLine("Profile Fetched");
+                var settings = await client.GetSettings();
+                System.Console.WriteLine("Settings Fetched");
+                var mapObjects = await client.GetMapObjects();
+                System.Console.WriteLine("Objects Fetched");
+                var inventory = await client.GetInventory();
+                System.Console.WriteLine("Inventory Fetched");
+                var pokemons = inventory.Payload[0].Bag.Items.Select(i => i.Item?.Pokemon).Where(p => p != null && p?.PokemonType != PokemonProto.Types.PokemonIds.PokemonUnset);
+
+                System.Console.WriteLine("Starting up! Don't forget to thank the people who contributed to this project. Pokebot V5.0");
+                await Task.Delay(5000);
+
+
+
+                try
+                {
+                    System.Console.WriteLine("||Farm Started||");
+                    await ExecuteFarmingPokestopsAndPokemons(client);
+                    System.Console.WriteLine("Unexpected stop? Restarting in 5 seconds.");
+                    await Task.Delay(5000);
+                    Execute();
+                }
+                catch (TaskCanceledException tce) { System.Console.WriteLine("Task Canceled Exception - Restarting"); Execute(); }
+                catch (UriFormatException ufe) { System.Console.WriteLine("System URI Format Exception - Restarting"); Execute(); }
+                catch (ArgumentOutOfRangeException aore) { System.Console.WriteLine("ArgumentOutOfRangeException - Restarting"); Execute(); }
+                catch (NullReferenceException nre) { System.Console.WriteLine("Null Refference - Restarting"); Execute(); }
+                //await ExecuteCatchAllNearbyPokemons(client);
+            }
+
 
 
         }
