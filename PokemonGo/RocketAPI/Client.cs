@@ -265,6 +265,7 @@ namespace PokemonGo.RocketAPI
         public async Task<PlayerUpdateResponse> UpdatePlayerLocation(double lat, double lng)
         {
             this.SetCoordinates(lat, lng);
+            System.Console.WriteLine("Current Location: " + lat + ", " + lng);
             var customRequest = new Request.Types.PlayerUpdateProto()
             {
                 Lat = Utils.FloatAsUlong(_currentLat),
