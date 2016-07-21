@@ -216,12 +216,18 @@ namespace PokemonGo.RocketAPI
                 //Delete token.txt
                 //File.Delete(@AppDomain.CurrentDomain.BaseDirectory + @"\token.txt");
                 //File.WriteAllText(@AppDomain.CurrentDomain.BaseDirectory + @"\token.txt", refreshToken2);
-                Console.WriteLine("Sucessfully receieved token. (using refresh token)");
+                ColoredConsoleWrite(ConsoleColor.DarkCyan, "Sucessfully receieved token. (using refresh token)");
                 _accessToken = authToken;
                 _authType = AuthType.Google;
             }
         }
-
+        public static void ColoredConsoleWrite(ConsoleColor color, string text)
+        {
+            ConsoleColor originalColor = System.Console.ForegroundColor;
+            System.Console.ForegroundColor = color;
+            System.Console.WriteLine(text);
+            System.Console.ForegroundColor = originalColor;
+        }
         public async Task LoginPtc(string username, string password)
         {
             //Get session cookie

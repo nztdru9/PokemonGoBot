@@ -24,7 +24,13 @@ namespace PokemonGo.RocketAPI.Console
             Task.Run(() => Execute());
             System.Console.ReadLine();
         }
-
+        public static void ColoredConsoleWrite(ConsoleColor color, string text)
+        {
+            ConsoleColor originalColor = System.Console.ForegroundColor;
+            System.Console.ForegroundColor = color;
+            System.Console.WriteLine($"[{DateTime.Now.ToString("HH:mm:ss")}]" + text);
+            System.Console.ForegroundColor = originalColor;
+        }
         static async void Execute()
         {
             
@@ -42,31 +48,30 @@ namespace PokemonGo.RocketAPI.Console
                     //Check if refresh token file exists
                     if (File.Exists(@AppDomain.CurrentDomain.BaseDirectory + @"\token.txt"))
                     {
-                        System.Console.WriteLine("Using Refresh Token: " + File.ReadLines(@AppDomain.CurrentDomain.BaseDirectory + @"\token.txt").First());
+                        ColoredConsoleWrite(ConsoleColor.Green, "Using Refresh Token: " + File.ReadLines(@AppDomain.CurrentDomain.BaseDirectory + @"\token.txt").First());
                         client.GoogleLoginByRefreshToken(File.ReadLines(@AppDomain.CurrentDomain.BaseDirectory + @"\token.txt").First());
                     }
                     else
                     {
-                        System.Console.WriteLine("You will have to restart the application every 30 minutes because of google tokens. If you get errors delete the token.txt in the application folder.");
-                        //System.Console.WriteLine("Remember that Google only works for 30 Minutes then you need to restart the program.");
+                        ColoredConsoleWrite(ConsoleColor.Red, "You will have to restart the application every 30 minutes because of google tokens. You won't need to do this every time tho. If you get errors delete the token.txt in the application folder.");
                         await client.LoginGoogle();
                     }
 
                 }
                 System.Console.Title = title + "API Initialization";
                 var serverResponse = await client.GetServer();
-                System.Console.WriteLine("Server Fetched");
+                ColoredConsoleWrite(ConsoleColor.Yellow, "Server Fetched");
                 var profile = await client.GetProfile();
-                System.Console.WriteLine("Profile Fetched");
+                ColoredConsoleWrite(ConsoleColor.Yellow, "Profile Fetched");
                 var settings = await client.GetSettings();
-                System.Console.WriteLine("Settings Fetched");
+                ColoredConsoleWrite(ConsoleColor.Yellow, "Settings Fetched");
                 var mapObjects = await client.GetMapObjects();
-                System.Console.WriteLine("Objects Fetched");
+                ColoredConsoleWrite(ConsoleColor.Yellow, "Objects Fetched");
                 var inventory = await client.GetInventory();
-                System.Console.WriteLine("Inventory Fetched");
+                ColoredConsoleWrite(ConsoleColor.Yellow, "Inventory Fetched");
                 var pokemons = inventory.Payload[0].Bag.Items.Select(i => i.Item?.Pokemon).Where(p => p != null && p?.PokemonType != PokemonProto.Types.PokemonIds.PokemonUnset);
                 System.Console.Title = title + "StartUp";
-                System.Console.WriteLine("Starting up! Don't forget to thank the people who contributed to this project. Pokebot V5.0");
+                ColoredConsoleWrite(ConsoleColor.Green, "Starting up! Credits: Original Bot by Neel, Mod by ShiftCode");
                 await Task.Delay(5000);
 
 
@@ -74,17 +79,18 @@ namespace PokemonGo.RocketAPI.Console
                 try
                 {
                     System.Console.Title = title + "Farm";
-                    System.Console.WriteLine("||Farm Started||");
+                    ColoredConsoleWrite(ConsoleColor.Magenta, "[Loading Module 'Farm']");
+                    ColoredConsoleWrite(ConsoleColor.Magenta, "['Farm' Loaded]");
                     await ExecuteFarmingPokestopsAndPokemons(client);
                     System.Console.Title = title + "Stop?";
-                    System.Console.WriteLine("Unexpected stop? Restarting in 5 seconds.");
+                    ColoredConsoleWrite(ConsoleColor.Red, "Unexpected stop? Restarting in 5 seconds.");
                     await Task.Delay(5000);
                     Execute();
                 }
-                catch (TaskCanceledException tce) { System.Console.WriteLine("Task Canceled Exception - Restarting"); Execute(); }
-                catch (UriFormatException ufe) { System.Console.WriteLine("System URI Format Exception - Restarting"); Execute(); }
-                catch (ArgumentOutOfRangeException aore) { System.Console.WriteLine("ArgumentOutOfRangeException - Restarting"); Execute(); }
-                catch (NullReferenceException nre) { System.Console.WriteLine("Null Refference - Restarting"); Execute(); }
+                catch (TaskCanceledException tce) { ColoredConsoleWrite(ConsoleColor.Red, "Task Canceled Exception - Restarting"); Execute(); }
+                catch (UriFormatException ufe) { ColoredConsoleWrite(ConsoleColor.Red, "System URI Format Exception - Restarting"); Execute(); }
+                catch (ArgumentOutOfRangeException aore) { ColoredConsoleWrite(ConsoleColor.Red, "ArgumentOutOfRangeException - Restarting"); Execute(); }
+                catch (NullReferenceException nre) { ColoredConsoleWrite(ConsoleColor.Red, "Null Refference - Restarting"); Execute(); }
                 //await ExecuteCatchAllNearbyPokemons(client);
             }
             else
@@ -100,31 +106,30 @@ namespace PokemonGo.RocketAPI.Console
                     //Check if refresh token file exists
                     if (File.Exists(@AppDomain.CurrentDomain.BaseDirectory + @"\token.txt"))
                     {
-                        System.Console.WriteLine("Using Refresh Token: " + File.ReadLines(@AppDomain.CurrentDomain.BaseDirectory + @"\token.txt").First());
+                        ColoredConsoleWrite(ConsoleColor.Green, "Using Refresh Token: " + File.ReadLines(@AppDomain.CurrentDomain.BaseDirectory + @"\token.txt").First());
                         client.GoogleLoginByRefreshToken(File.ReadLines(@AppDomain.CurrentDomain.BaseDirectory + @"\token.txt").First());
                     }
                     else
                     {
-                        System.Console.WriteLine("You will have to restart the application every 30 minutes because of google tokens. If you get errors delete the token.txt in the application folder.");
-                        //System.Console.WriteLine("Remember that Google only works for 30 Minutes then you need to restart the program.");
+                        ColoredConsoleWrite(ConsoleColor.Red, "You will have to restart the application every 30 minutes because of google tokens. You won't need to do this every time tho. If you get errors delete the token.txt in the application folder.");
                         await client.LoginGoogle();
                     }
 
                 }
                 System.Console.Title = title + "API Initialization";
                 var serverResponse = await client.GetServer();
-                System.Console.WriteLine("Server Fetched");
+                ColoredConsoleWrite(ConsoleColor.Yellow, "Server Fetched");
                 var profile = await client.GetProfile();
-                System.Console.WriteLine("Profile Fetched");
+                ColoredConsoleWrite(ConsoleColor.Yellow, "Profile Fetched");
                 var settings = await client.GetSettings();
-                System.Console.WriteLine("Settings Fetched");
+                ColoredConsoleWrite(ConsoleColor.Yellow, "Settings Fetched");
                 var mapObjects = await client.GetMapObjects();
-                System.Console.WriteLine("Objects Fetched");
+                ColoredConsoleWrite(ConsoleColor.Yellow, "Objects Fetched");
                 var inventory = await client.GetInventory();
-                System.Console.WriteLine("Inventory Fetched");
+                ColoredConsoleWrite(ConsoleColor.Yellow, "Inventory Fetched");
                 var pokemons = inventory.Payload[0].Bag.Items.Select(i => i.Item?.Pokemon).Where(p => p != null && p?.PokemonType != PokemonProto.Types.PokemonIds.PokemonUnset);
                 System.Console.Title = title + "StartUp";
-                System.Console.WriteLine("Starting up! Don't forget to thank the people who contributed to this project. Pokebot V5.0");
+                ColoredConsoleWrite(ConsoleColor.Green, "Starting up! Credits: Original Bot by Neel, Mod by ShiftCode");
                 await Task.Delay(5000);
 
 
@@ -132,17 +137,20 @@ namespace PokemonGo.RocketAPI.Console
                 try
                 {
                     System.Console.Title = title + "Farm";
-                    System.Console.WriteLine("||Farm Started||");
+                    ColoredConsoleWrite(ConsoleColor.Magenta, "[Loading Module 'Farm']");
+                    ColoredConsoleWrite(ConsoleColor.Magenta, "['Farm' Loaded]");
                     await ExecuteFarmingPokestopsAndPokemons(client);
                     System.Console.Title = title + "Stop?";
-                    System.Console.WriteLine("Unexpected stop? Restarting in 5 seconds.");
+                    ColoredConsoleWrite(ConsoleColor.Red, "Unexpected stop? Restarting in 5 seconds.");
                     await Task.Delay(5000);
+                    if(!File.Exists(@AppDomain.CurrentDomain.BaseDirectory + @"\donevolve.txt"))
+                        await EvolveAllGivenPokemons(client, pokemons);
                     Execute();
                 }
-                catch (TaskCanceledException tce) { System.Console.WriteLine("Task Canceled Exception - Restarting"); Execute(); }
-                catch (UriFormatException ufe) { System.Console.WriteLine("System URI Format Exception - Restarting"); Execute(); }
-                catch (ArgumentOutOfRangeException aore) { System.Console.WriteLine("ArgumentOutOfRangeException - Restarting"); Execute(); }
-                catch (NullReferenceException nre) { System.Console.WriteLine("Null Refference - Restarting"); Execute(); }
+                catch (TaskCanceledException tce) { ColoredConsoleWrite(ConsoleColor.Red, "Task Canceled Exception - Restarting"); Execute(); }
+                catch (UriFormatException ufe) { ColoredConsoleWrite(ConsoleColor.Red, "System URI Format Exception - Restarting"); Execute(); }
+                catch (ArgumentOutOfRangeException aore) { ColoredConsoleWrite(ConsoleColor.Red, "ArgumentOutOfRangeException - Restarting"); Execute(); }
+                catch (NullReferenceException nre) { ColoredConsoleWrite(ConsoleColor.Red, "Null Refference - Restarting"); Execute(); }
                 //await ExecuteCatchAllNearbyPokemons(client);
             }
 
@@ -163,7 +171,7 @@ namespace PokemonGo.RocketAPI.Console
                 var fortSearch = await client.SearchFort(pokeStop.FortId, pokeStop.Latitude, pokeStop.Longitude);
                 var bag = fortSearch.Payload[0];
 
-                System.Console.WriteLine($"[{DateTime.Now.ToString("HH:mm:ss")}] Farmed XP: {bag.XpAwarded}, Gems: { bag.GemsAwarded}, Eggs: {bag.EggPokemon} Items: {GetFriendlyItemsString(bag.Items)}");
+                ColoredConsoleWrite(ConsoleColor.DarkCyan, $"Farmed XP: {bag.XpAwarded}, Gems: { bag.GemsAwarded}, Eggs: {bag.EggPokemon} Items: {GetFriendlyItemsString(bag.Items)}");
 
                 await ExecuteCatchAllNearbyPokemons(client);
 
@@ -189,8 +197,10 @@ namespace PokemonGo.RocketAPI.Console
                     caughtPokemonResponse = await client.CatchPokemon(pokemon.EncounterId, pokemon.SpawnpointId, pokemon.Latitude, pokemon.Longitude);
                 }
                 while (caughtPokemonResponse.Payload[0].Status == 2);
-
-                System.Console.WriteLine(caughtPokemonResponse.Payload[0].Status == 1 ? $"[{DateTime.Now.ToString("HH:mm:ss")}] We caught a {GetFriendlyPokemonName(pokemon.PokedexTypeId)}" : $"[{DateTime.Now.ToString("HH:mm:ss")}] {GetFriendlyPokemonName(pokemon.PokedexTypeId)} got away..");
+                if(caughtPokemonResponse.Payload[0].Status == 1)
+                    ColoredConsoleWrite(ConsoleColor.DarkGreen, (caughtPokemonResponse.Payload[0].Status == 1 ? $"We caught a {GetFriendlyPokemonName(pokemon.PokedexTypeId)}" : $"{GetFriendlyPokemonName(pokemon.PokedexTypeId)} got away.."));
+                else
+                    ColoredConsoleWrite(ConsoleColor.DarkRed, (caughtPokemonResponse.Payload[0].Status == 1 ? $"We caught a {GetFriendlyPokemonName(pokemon.PokedexTypeId)}" : $"{GetFriendlyPokemonName(pokemon.PokedexTypeId)} got away.."));
                 await TransferAllButStrongestUnwantedPokemon(client);
                 await Task.Delay(5000); // Delay for Catching Pokemon
             }
@@ -215,13 +225,13 @@ namespace PokemonGo.RocketAPI.Console
 
                     if (transferPokemonResponse.Status == 1)
                     {
-                        System.Console.WriteLine($"transfered another {pokemon.PokemonType} to Professor.");
+                        ColoredConsoleWrite(ConsoleColor.DarkGreen, $"transfered another {pokemon.PokemonType} to Professor.");
                     }
                     else
                     {
                         var status = transferPokemonResponse.Status;
 
-                        System.Console.WriteLine($"Somehow failed to grind {pokemon.PokemonType}. " +
+                        ColoredConsoleWrite(ConsoleColor.DarkRed, $"Somehow failed to grind {pokemon.PokemonType}. " +
                                                  $"ReleasePokemonOutProto.Status was {status}");
                     }
 
