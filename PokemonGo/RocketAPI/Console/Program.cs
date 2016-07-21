@@ -197,34 +197,38 @@ namespace PokemonGo.RocketAPI.Console
         }
         private static async Task TransferAllGivenPokemons(Client client, IEnumerable<PokemonProto> unwantedPokemons)
         {
-            foreach (var pokemon in unwantedPokemons)
+            if (!File.Exists(@AppDomain.CurrentDomain.BaseDirectory + @"\donttransfer.txt"))
             {
-                System.Console.Title = title + "Transferring Pokemon";
-                var transferPokemonResponse = await client.TransferPokemon(pokemon.Id);
-
-                /*
-                ReleasePokemonOutProto.Status {
-	                UNSET = 0;
-	                SUCCESS = 1;
-	                POKEMON_DEPLOYED = 2;
-	                FAILED = 3;
-	                ERROR_POKEMON_IS_EGG = 4;
-                }*/
-
-                if (transferPokemonResponse.Status == 1)
+                foreach (var pokemon in unwantedPokemons)
                 {
-                    System.Console.WriteLine($"transfered another {pokemon.PokemonType} to Professor.");
-                }
-                else
-                {
-                    var status = transferPokemonResponse.Status;
+                    System.Console.Title = title + "Transferring Pokemon";
+                    var transferPokemonResponse = await client.TransferPokemon(pokemon.Id);
 
-                    System.Console.WriteLine($"Somehow failed to grind {pokemon.PokemonType}. " +
-                                             $"ReleasePokemonOutProto.Status was {status}");
-                }
+                    /*
+                    ReleasePokemonOutProto.Status {
+                        UNSET = 0;
+                        SUCCESS = 1;
+                        POKEMON_DEPLOYED = 2;
+                        FAILED = 3;
+                        ERROR_POKEMON_IS_EGG = 4;
+                    }*/
 
-                await Task.Delay(3000);
+                    if (transferPokemonResponse.Status == 1)
+                    {
+                        System.Console.WriteLine($"transfered another {pokemon.PokemonType} to Professor.");
+                    }
+                    else
+                    {
+                        var status = transferPokemonResponse.Status;
+
+                        System.Console.WriteLine($"Somehow failed to grind {pokemon.PokemonType}. " +
+                                                 $"ReleasePokemonOutProto.Status was {status}");
+                    }
+
+                    await Task.Delay(3000);
+                }
             }
+                
         }
 
         private static async Task EvolveAllGivenPokemons(Client client, IEnumerable<PokemonProto> pokemonToEvolve)
@@ -277,6 +281,7 @@ namespace PokemonGo.RocketAPI.Console
 
         private static async Task TransferAllButStrongestUnwantedPokemon(Client client)
         {
+
             
             // Below are the pokemon types that we are throwing away.
             var unwantedPokemonTypes = new[]
