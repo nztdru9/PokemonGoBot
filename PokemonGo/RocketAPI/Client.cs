@@ -27,6 +27,7 @@ namespace PokemonGo.RocketAPI
 {
     public class Client
     {
+        public static string title = "PokeBot 1.1 | Current Module: ";
         private readonly HttpClient _httpClient;
         private AuthType _authType = AuthType.Google;
         private string _accessToken;
@@ -39,7 +40,7 @@ namespace PokemonGo.RocketAPI
         public Client(double lat, double lng)
         {
             SetCoordinates(lat, lng);
-            Console.WriteLine(lat + ", " + lng);
+            Console.WriteLine("Current Coords: " + lat + ", " + lng);
             //Setup HttpClient and create default headers
             HttpClientHandler handler = new HttpClientHandler()
             {
@@ -107,7 +108,7 @@ namespace PokemonGo.RocketAPI
 
         public async Task LoginGoogle()
         {
-
+            System.Console.Title = title + "GoogleLogin";
             String OAUTH_ENDPOINT = "https://accounts.google.com/o/oauth2/device/code";
             String CLIENT_ID = "848232511240-73ri3t7plvk96pj4f85uj8otdat2alem.apps.googleusercontent.com";
 

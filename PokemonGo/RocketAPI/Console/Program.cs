@@ -17,8 +17,10 @@ namespace PokemonGo.RocketAPI.Console
 {
     class Program
     {
+        public static string title = "PokeBot 1.1 | Current Module: ";
         static void Main(string[] args)
         {
+            System.Console.Title = title + "Initialization";
             Task.Run(() => Execute());
             System.Console.ReadLine();
         }
@@ -32,6 +34,7 @@ namespace PokemonGo.RocketAPI.Console
                 var client = new Client(Convert.ToDouble(lines[0]), Convert.ToDouble(lines[1]));
                 if (Settings.UsePTC)
                 {
+                    System.Console.Title = title + "PTCLogin";
                     await client.LoginPtc(Settings.PtcUsername, Settings.PtcPassword);
                 }
                 else
@@ -50,6 +53,7 @@ namespace PokemonGo.RocketAPI.Console
                     }
 
                 }
+                System.Console.Title = title + "API Initialization";
                 var serverResponse = await client.GetServer();
                 System.Console.WriteLine("Server Fetched");
                 var profile = await client.GetProfile();
@@ -61,7 +65,7 @@ namespace PokemonGo.RocketAPI.Console
                 var inventory = await client.GetInventory();
                 System.Console.WriteLine("Inventory Fetched");
                 var pokemons = inventory.Payload[0].Bag.Items.Select(i => i.Item?.Pokemon).Where(p => p != null && p?.PokemonType != PokemonProto.Types.PokemonIds.PokemonUnset);
-
+                System.Console.Title = title + "StartUp";
                 System.Console.WriteLine("Starting up! Don't forget to thank the people who contributed to this project. Pokebot V5.0");
                 await Task.Delay(5000);
 
@@ -69,8 +73,10 @@ namespace PokemonGo.RocketAPI.Console
 
                 try
                 {
+                    System.Console.Title = title + "Farm";
                     System.Console.WriteLine("||Farm Started||");
                     await ExecuteFarmingPokestopsAndPokemons(client);
+                    System.Console.Title = title + "Stop?";
                     System.Console.WriteLine("Unexpected stop? Restarting in 5 seconds.");
                     await Task.Delay(5000);
                     Execute();
@@ -84,14 +90,9 @@ namespace PokemonGo.RocketAPI.Console
             else
             {
                 var client = new Client(Settings.DefaultLatitude, Settings.DefaultLongitude);
-                if (Settings.DefaultLatitude == 0 && Settings.DefaultLongitude == 0)
-                {
-                    System.Console.WriteLine("You need to change Latitude and Longitude in the Settings.cs first (before you can use this script).\nThis Window will be closed in 10 Seconds!");
-                    await Task.Delay(10000);
-                    System.Environment.Exit(1);
-                }
                 if (Settings.UsePTC)
                 {
+                    System.Console.Title = title + "PTCLogin";
                     await client.LoginPtc(Settings.PtcUsername, Settings.PtcPassword);
                 }
                 else
@@ -110,6 +111,7 @@ namespace PokemonGo.RocketAPI.Console
                     }
 
                 }
+                System.Console.Title = title + "API Initialization";
                 var serverResponse = await client.GetServer();
                 System.Console.WriteLine("Server Fetched");
                 var profile = await client.GetProfile();
@@ -121,7 +123,7 @@ namespace PokemonGo.RocketAPI.Console
                 var inventory = await client.GetInventory();
                 System.Console.WriteLine("Inventory Fetched");
                 var pokemons = inventory.Payload[0].Bag.Items.Select(i => i.Item?.Pokemon).Where(p => p != null && p?.PokemonType != PokemonProto.Types.PokemonIds.PokemonUnset);
-
+                System.Console.Title = title + "StartUp";
                 System.Console.WriteLine("Starting up! Don't forget to thank the people who contributed to this project. Pokebot V5.0");
                 await Task.Delay(5000);
 
@@ -129,8 +131,10 @@ namespace PokemonGo.RocketAPI.Console
 
                 try
                 {
+                    System.Console.Title = title + "Farm";
                     System.Console.WriteLine("||Farm Started||");
                     await ExecuteFarmingPokestopsAndPokemons(client);
+                    System.Console.Title = title + "Stop?";
                     System.Console.WriteLine("Unexpected stop? Restarting in 5 seconds.");
                     await Task.Delay(5000);
                     Execute();
@@ -149,11 +153,11 @@ namespace PokemonGo.RocketAPI.Console
         private static async Task ExecuteFarmingPokestopsAndPokemons(Client client)
         {
             var mapObjects = await client.GetMapObjects();
-
             var pokeStops = mapObjects.Payload[0].Profile.SelectMany(i => i.Fort).Where(i => i.FortType == (int)MiscEnums.FortType.CHECKPOINT && i.CooldownCompleteMs < DateTime.UtcNow.ToUnixTime());
 
             foreach (var pokeStop in pokeStops)
             {
+                System.Console.Title = title + "Farming PokeStops";
                 var update = await client.UpdatePlayerLocation(pokeStop.Latitude, pokeStop.Longitude);
                 var fortInfo = await client.GetFort(pokeStop.FortId, pokeStop.Latitude, pokeStop.Longitude);
                 var fortSearch = await client.SearchFort(pokeStop.FortId, pokeStop.Latitude, pokeStop.Longitude);
@@ -175,6 +179,7 @@ namespace PokemonGo.RocketAPI.Console
 
             foreach (var pokemon in pokemons)
             {
+                System.Console.Title = title + "Catching Pokemon";
                 var update = await client.UpdatePlayerLocation(pokemon.Latitude, pokemon.Longitude);
                 var encounterPokemonRespone = await client.EncounterPokemon(pokemon.EncounterId, pokemon.SpawnpointId);
 
@@ -194,6 +199,7 @@ namespace PokemonGo.RocketAPI.Console
         {
             foreach (var pokemon in unwantedPokemons)
             {
+                System.Console.Title = title + "Transferring Pokemon";
                 var transferPokemonResponse = await client.TransferPokemon(pokemon.Id);
 
                 /*
@@ -309,6 +315,7 @@ namespace PokemonGo.RocketAPI.Console
 
             foreach (var unwantedPokemonType in unwantedPokemonTypes)
             {
+                System.Console.Title = title + "Transferring Pokemon";
                 var pokemonOfDesiredType = pokemons.Where(p => p.PokemonType == unwantedPokemonType)
                                                    .OrderByDescending(p => p.Cp)
                                                    .ToList();
