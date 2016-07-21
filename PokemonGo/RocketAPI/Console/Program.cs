@@ -17,7 +17,7 @@ namespace PokemonGo.RocketAPI.Console
 {
     class Program
     {
-        public static string title = "PokeBot 1.1 | Current Module: ";
+        public static string title = "PokeBot 1.2 | Current Module: ";
         static void Main(string[] args)
         {
             System.Console.Title = title + "Initialization";
@@ -30,6 +30,56 @@ namespace PokemonGo.RocketAPI.Console
             System.Console.ForegroundColor = color;
             System.Console.WriteLine($"[{DateTime.Now.ToString("HH:mm:ss")}]" + text);
             System.Console.ForegroundColor = originalColor;
+        }
+        private static async Task EvolveAllGivenPokemons(Client client, IEnumerable<PokemonProto> pokemonToEvolve)
+        {
+            foreach (var pokemon in pokemonToEvolve)
+            {
+                /*
+                enum Holoholo.Rpc.Types.EvolvePokemonOutProto.Result {
+	                UNSET = 0;
+	                SUCCESS = 1;
+	                FAILED_POKEMON_MISSING = 2;
+	                FAILED_INSUFFICIENT_RESOURCES = 3;
+	                FAILED_POKEMON_CANNOT_EVOLVE = 4;
+	                FAILED_POKEMON_IS_DEPLOYED = 5;
+                }
+                }*/
+
+                var countOfEvolvedUnits = 0;
+                var xpCount = 0;
+
+                EvolvePokemonOutProto evolvePokemonOutProto;
+                do
+                {
+                    evolvePokemonOutProto = await client.EvolvePokemon(pokemon.Id);
+                        //todo: someone check whether this still works
+
+                    if (evolvePokemonOutProto.Result == 1)
+                    {
+                        ColoredConsoleWrite(ConsoleColor.Cyan, 
+                            $"[{DateTime.Now.ToString("HH:mm:ss")}] Evolved {pokemon.Id} successfully for {evolvePokemonOutProto.ExpAwarded}xp");
+
+                        countOfEvolvedUnits++;
+                        xpCount += evolvePokemonOutProto.ExpAwarded;
+                    }
+                    else
+                    {
+                        var result = evolvePokemonOutProto.Result;
+                        /*
+                        ColoredConsoleWrite(ConsoleColor.White, $"Failed to evolve {pokemon.PokemonId}. " +
+                                                 $"EvolvePokemonOutProto.Result was {result}");
+
+                        ColoredConsoleWrite(ConsoleColor.White, $"Due to above error, stopping evolving {pokemon.PokemonId}");
+                        */
+                    }
+                } while (evolvePokemonOutProto.Result == 1);
+                if (countOfEvolvedUnits > 0)
+                    ColoredConsoleWrite(ConsoleColor.Cyan, 
+                        $"[{DateTime.Now.ToString("HH:mm:ss")}] Evolved {countOfEvolvedUnits} pieces of {pokemon.Id} for {xpCount}xp");
+
+                await Task.Delay(3000);
+            }
         }
         static async void Execute()
         {
@@ -81,6 +131,8 @@ namespace PokemonGo.RocketAPI.Console
                     System.Console.Title = title + "Farm";
                     ColoredConsoleWrite(ConsoleColor.Magenta, "[Loading Module 'Farm']");
                     ColoredConsoleWrite(ConsoleColor.Magenta, "['Farm' Loaded]");
+                    await EvolveAllGivenPokemons(client, pokemons);
+                    await Task.Delay(5000);
                     await ExecuteFarmingPokestopsAndPokemons(client);
                     System.Console.Title = title + "Stop?";
                     ColoredConsoleWrite(ConsoleColor.Red, "Unexpected stop? Restarting in 5 seconds.");
@@ -162,7 +214,6 @@ namespace PokemonGo.RocketAPI.Console
         {
             var mapObjects = await client.GetMapObjects();
             var pokeStops = mapObjects.Payload[0].Profile.SelectMany(i => i.Fort).Where(i => i.FortType == (int)MiscEnums.FortType.CHECKPOINT && i.CooldownCompleteMs < DateTime.UtcNow.ToUnixTime());
-
             foreach (var pokeStop in pokeStops)
             {
                 System.Console.Title = title + "Farming PokeStops";
@@ -241,53 +292,7 @@ namespace PokemonGo.RocketAPI.Console
                 
         }
 
-        private static async Task EvolveAllGivenPokemons(Client client, IEnumerable<PokemonProto> pokemonToEvolve)
-        {
-            foreach (var pokemon in pokemonToEvolve)
-            {
-                /*
-                enum Holoholo.Rpc.Types.EvolvePokemonOutProto.Result {
-	                UNSET = 0;
-	                SUCCESS = 1;
-	                FAILED_POKEMON_MISSING = 2;
-	                FAILED_INSUFFICIENT_RESOURCES = 3;
-	                FAILED_POKEMON_CANNOT_EVOLVE = 4;
-	                FAILED_POKEMON_IS_DEPLOYED = 5;
-                }
-                }*/
-
-                var countOfEvolvedUnits = 0;
-                var xpCount = 0;
-
-                EvolvePokemonOutProto evolvePokemonOutProto;
-                do
-                {
-                    evolvePokemonOutProto = await client.EvolvePokemon(pokemon.Id);
-
-                    if (evolvePokemonOutProto.Result == 1)
-                    {
-                        System.Console.WriteLine($"Evolved {pokemon.PokemonType} successfully for {evolvePokemonOutProto.ExpAwarded}xp");
-
-                        countOfEvolvedUnits++;
-                        xpCount += evolvePokemonOutProto.ExpAwarded;
-                    }
-                    else
-                    {
-                        var result = evolvePokemonOutProto.Result;
-
-                        System.Console.WriteLine($"Failed to evolve {pokemon.PokemonType}. " +
-                                                 $"EvolvePokemonOutProto.Result was {result}");
-
-                        System.Console.WriteLine($"Due to above error, stopping evolving {pokemon.PokemonType}");
-                    }
-                }
-                while (evolvePokemonOutProto.Result == 1);
-
-                System.Console.WriteLine($"Evolved {countOfEvolvedUnits} pieces of {pokemon.PokemonType} for {xpCount}xp");
-
-                await Task.Delay(3000);
-            }
-        }
+        
 
         private static async Task TransferAllButStrongestUnwantedPokemon(Client client)
         {
