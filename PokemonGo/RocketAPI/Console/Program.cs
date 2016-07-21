@@ -191,12 +191,13 @@ namespace PokemonGo.RocketAPI.Console
                     System.Console.Title = title + "Farm";
                     ColoredConsoleWrite(ConsoleColor.Magenta, "[Loading Module 'Farm']");
                     ColoredConsoleWrite(ConsoleColor.Magenta, "['Farm' Loaded]");
+                    //if (!File.Exists(@AppDomain.CurrentDomain.BaseDirectory + @"\donevolve.txt"))
+                    //    await EvolveAllGivenPokemons(client, pokemons);
+                    await Task.Delay(5000);
                     await ExecuteFarmingPokestopsAndPokemons(client);
                     System.Console.Title = title + "Stop?";
                     ColoredConsoleWrite(ConsoleColor.Red, "Unexpected stop? Restarting in 5 seconds.");
                     await Task.Delay(5000);
-                    if(!File.Exists(@AppDomain.CurrentDomain.BaseDirectory + @"\donevolve.txt"))
-                        await EvolveAllGivenPokemons(client, pokemons);
                     Execute();
                 }
                 catch (TaskCanceledException tce) { ColoredConsoleWrite(ConsoleColor.Red, "Task Canceled Exception - Restarting"); Execute(); }
