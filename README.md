@@ -7,7 +7,7 @@ Features:
 - [x] Login with PTC [NOT in releases]
 - [x] Login with Google
 - [x] Hatch Eggs
-- [x] Evolve Pokemon
+- [ ] Evolve Pokemon [not working ATM, help wanted]
 - [x] Add awesome colorZ
 - [ ] Incubate New Eggs
 - [ ] More proto
@@ -16,7 +16,7 @@ Features:
 - [x] token.txt | Contains: 1 Line with Refresh Token | Don't delete!
 - [x] gps.txt | Contains: 2 Lines with lat/lng coords. Dot/comma seems to be localized, try which one works. | Defaults to a 6 pokestop place in america
 - [x] donttransfer.txt | Contains: nothing | Create to disable transfers
-- [x] dontevolve | Contains: nothing | Create to disable evolving
+- [ ] [Not needed, disabled automatically cuz not working] dontevolve.txt | Contains: nothing | Create to disable evolving
 
 # Setup Guide
 - Download and extract the newest release [here](https://github.com/shiftcodeYT/PokemonGoBot/releases/latest)
